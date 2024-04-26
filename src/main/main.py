@@ -38,4 +38,8 @@ if __name__ == '__main__':
             		load_cm_updates_event= cm_updates_event['validated_row'] | 'loadtoBQ_cm_updates_event' >> beam.io.WriteToBigQuery(my_pipeline_options.cm_updates_event_table,ignore_unknown_columns=True,create_disposition='CREATE_NEVER',write_disposition='WRITE_APPEND',method='STREAMING_INSERTS',insert_retry_strategy='RETRY_ON_TRANSIENT_ERROR') 
                         load_cm_updates_event_error= cm_updates_event['exception_row'] | 'loadtoBQerror cm_updates_event' >> beam.io.WriteToBigQuery(my_pipeline_options.case_manager_error_table,ignore_unknown_columns=True,create_disposition='CREATE_NEVER',write_disposition='WRITE_APPEND',method='STREAMING_INSERTS',insert_retry_strategy='RETRY_ON_TRANSIENT_ERROR')
 
-
+                        #Case for Event Status
+            		cm_updates_status = (file_type['CM_UPDATES_EVENTS_STATUS'] | 'read cm_updates_status' >> beam.io.ReadAllFromText()
+            			| ' convertToDict_cm_updates_status' >> beam.ParDo(ConvertToDict.ConvertToDict(),my_pipeline_options.logging_mode,my_pipeline_options.cm_updates_status_table).with_outputs('exception_row','validated_row'))
+            		load_cm_updates_status=cm_updates_status['validated_row']	| 'loadtoBQ_cm_updates_status' >> beam.io.WriteToBigQuery(my_pipeline_options.cm_updates_status_table,ignore_unknown_columns=True,create_disposition='CREATE_NEVER',write_disposition='WRITE_APPEND',method='STREAMING_INSERTS',insert_retry_strategy='RETRY_ON_TRANSIENT_ERROR')
+                        load_cm_updates_status_error=cm_updates_status['exception_row']	| 'loadtoBQerror cm_updates_status' >> beam.io.WriteToBigQuery(my_pipeline_options.case_manager_error_table,ignore_unknown_columns=True,create_disposition='CREATE_NEVER',write_disposition='WRITE_APPEND',method='STREAMING_INSERTS',insert_retry_strategy='RETRY_ON_TRANSIENT_ERROR')
