@@ -1,1 +1,28 @@
-
+--no_use_public_ips
+--service_account_email deploy-dataflow@hsbc-10534429-fdreu-dev.iam.gserviceaccount.com
+--job_name gcs-pubsub-bq-fdr-case-manager
+--staging_location  gs://dataflow-fdreu-dev/pipelines/gcs-pubsub-bq-fdr-case-manager/staging
+--project hsbc-10534429-fdreu-dev
+--region europe-west2
+--subnet regions/europe-west2/subnetworks/dataflow-europe-west2
+--runner DataFlowRunner
+--temp_location gs://dataflow-fdreu-dev/pipelines/gcs-pubsub-bq-fdr-case-manager/temp
+--dataflow_kms_key projects/hsbc-6320774-kms-dev/locations/europe-west2/keyRings/hsbc-10534429-fdreu-dev/cryptoKeys/dataFlow
+--max_num_workers 4
+--num_workers 1
+--disk_size_gb 100
+--setup_file ./src/main/setup.py
+--requirements_file ./src/main/requirements.txt
+--save_main_session true
+--machine_type n2-standard-4
+--autoscaling_algorithm THROUGHPUT_BASED
+--streaming
+--logging_mode DEBUG
+--template_location gs://dataflow-fdreu-dev/templates/gcs-pubsub-bq-fdr-case-manager-template
+--subscription projects/hsbc-11616597-feedzaieuqa-dev/subscriptions/case_manager_notifications_sub
+--cm_updates_event_table hsbc-10534429-fdreu-dev.FZ_EU_FDR_DEV_SIT.cm_event_arrival
+--cm_updates_queue_table hsbc-10534429-fdreu-dev.FZ_EU_FDR_DEV_SIT.cm_event_queue_changed
+--cm_updates_status_table hsbc-10534429-fdreu-dev.FZ_EU_FDR_DEV_SIT.cm_event_state_updates
+--cm_updates_user_table hsbc-10534429-fdreu-dev.FZ_EU_FDR_DEV_SIT.cm_event_assignee_update
+--cm_cases_user_table hsbc-10534429-fdreu-dev.FZ_EU_FDR_DEV_SIT.cm_case_assignee_change
+--cm_cases_queue_table hsbc-10534429-fdreu-dev.FZ_EU_FDR_DEV_SIT.cm_case_queue_change
